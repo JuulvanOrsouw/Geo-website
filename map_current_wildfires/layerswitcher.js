@@ -130,6 +130,9 @@ map.on('click', function(e) {
           popupContent += `
             <p><strong>Residences Destroyed:</strong> ${properties.residencesdestroyed}</p>
             <p><strong>Incident Type:</strong> ${properties.incidenttypecategory}</p>
+            <p><strong>Total Incident Personnel:</strong> ${properties.totalincidentpersonnel}</p>
+            <p><strong>Fatalities:</strong> ${properties.fatalities}</p>
+            <p><strong>Calculated Acres:</strong> ${properties.calculatedacres}</p>
             <hr>
           `;
         });
