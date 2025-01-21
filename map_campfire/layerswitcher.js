@@ -81,7 +81,7 @@ map.addLayer(markers);
 
 // Define layer control options
 const layers = {
-  "House 1-10": markers,
+  "Burned Houses": markers,
 };
 
 // Create and add the layer switcher control to the map
