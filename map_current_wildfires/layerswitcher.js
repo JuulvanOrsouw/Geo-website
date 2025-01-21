@@ -62,6 +62,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const stateAbbr = selectedValue.slice(-2); // Extract the last two characters
     console.log('Selected State:', stateAbbr);
 
+    // Update the map layer to show only the selected state
     updateMapLayer(stateAbbr);
   });
 
@@ -89,6 +90,8 @@ function updateMapLayer(stateAbbr) {
   }
 }
 
+
+
 // Define layer control options
 const layers = {
   "Current Wildfires": current_wilfdire,
@@ -99,55 +102,22 @@ const layers = {
 const lagenSwitcher = new L.Control.Layers(basemaps, layers);
 map.addControl(lagenSwitcher);
 
-map.on('click', function(e) {
-  const wmsUrl = 'http://localhost:8080/geoserver/Wildfire/wms';
+document.addEventListener('DOMContentLoaded', function() {
+  const stateSelect = document.getElementById('state-select');
 
-  const params = {
-    service: 'WMS',
-    version: '1.1.0',
-    request: 'GetFeatureInfo',
-    layers: 'current_wilfdire',
-    query_layers: 'current_wilfdire',
-    info_format: 'application/json',
-    feature_count: 5,
-    x: Math.round(e.containerPoint.x),
-    y: Math.round(e.containerPoint.y),
-    width: map.getSize().x,
-    height: map.getSize().y,
-    srs: 'EPSG:4326',
-    bbox: map.getBounds().toBBoxString()
-  };
+  stateSelect.addEventListener('change', function() {
+    const selectedValue = stateSelect.value;
+    console.log('Selected State:', selectedValue);
 
-  const url = wmsUrl + '?' + new URLSearchParams(params).toString();
-
-  fetch(url)
-    .then(response => response.json())
-    .then(data => {
-      if (data.features.length > 0) {
-        let popupContent = '<h3>Wildfire Info</h3>';
-        data.features.forEach(feature => {
-          const properties = feature.properties;
-          popupContent += `
-            <p><strong>Residences Destroyed:</strong> ${properties.residencesdestroyed}</p>
-            <p><strong>Incident Type:</strong> ${properties.incidenttypecategory}</p>
-            <p><strong>Total Incident Personnel:</strong> ${properties.totalincidentpersonnel}</p>
-            <p><strong>Fatalities:</strong> ${properties.fatalities}</p>
-            <p><strong>Calculated Acres:</strong> ${properties.calculatedacres}</p>
-            <hr>
-          `;
-        });
-        L.popup()
-          .setLatLng(e.latlng)
-          .setContent(popupContent)
-          .openOn(map);
-      } else {
-        L.popup()
-          .setLatLng(e.latlng)
-          .setContent('No data available at this location.')
-          .openOn(map);
-      }
-    })
-    .catch(error => {
-      console.error('Error fetching feature info:', error);
-    });
+    // Update the CQL filter for the current_wilfdire layer
+    if (selectedValue) {
+      current_wilfdire.setParams({
+        cql_filter: `poostate='${selectedValue}'`
+      });
+    } else {
+      current_wilfdire.setParams({
+        cql_filter: ''
+      });
+    }
+  });
 });
