@@ -40,6 +40,10 @@ create_table_query = '''
 cur.execute(create_table_query)
 conn.commit()
 
+# Clear existing data to overwrite instead of adding
+cur.execute("TRUNCATE TABLE public.current_wilfdire")
+conn.commit()
+
 # HTTP headers
 headers = {
     'Accept': 'application/json',
@@ -59,16 +63,12 @@ if response.status_code == 200:
     # Parse JSON response
     json_object_list = response.json()
 
-    # Write to file to check output from request (optional)
-    with open('data.json', 'w', encoding='utf-8') as f:
-        json.dump(json_object_list, f, ensure_ascii=False, indent=4)
-
     # Insert data into the database
     for feature in json_object_list['features']:
         properties = feature['properties']
         geom = feature['geometry']
 
-        # Extract key properties (adjust to match your schema)
+        # Extract key properties
         DailyAcres = properties.get('DailyAcres')
         IncidentName = properties.get('IncidentName')
         IncidentTypeCategory = properties.get('IncidentTypeCategory')
