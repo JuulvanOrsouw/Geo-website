@@ -26,7 +26,7 @@ async function fetchWildfireData(state) {
     totalfatalities = 0;
     totalincidentpersonnel = 0;
     totalresidencesdestroyed = 0;
-    incidenttypecategory = 0;  // Reset RX count
+    incidenttypecategory = 0;
 
     // Loop through features and calculate totals
     data.features.forEach((feature) => {
@@ -35,7 +35,7 @@ async function fetchWildfireData(state) {
       const fatalities = feature.properties.fatalities || 0;
       const personnel = feature.properties.totalincidentpersonnel || 0;
       const residences = feature.properties.residencesdestroyed || 0;
-      const typeCategory = feature.properties.incidenttypecategory || '';  // Get incident type category
+      const typeCategory = feature.properties.incidenttypecategory || ''; 
 
       totalacresburned += acres;
       totalfatalities += fatalities;
